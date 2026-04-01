@@ -97,7 +97,7 @@ def setting_parameters() -> dict:
     print("Параметры сохранены!")
     return parameters
 """конец блока настроек"""
-def db_connect() -> PostgresqlDatabase:
+def create_db_connect() -> PostgresqlDatabase:
     parameters = {}
     """Блок настроек"""
     if not is_env_exist():
@@ -116,8 +116,7 @@ def db_connect() -> PostgresqlDatabase:
             print(f"Ошибка при чтении файла: {e}")
             parameters = setting_parameters()
     """Теперь создать подключение"""
-    db = None
-    def try_connect(db, parameters):
+    def try_connect(parameters):
         try:
             db = PostgresqlDatabase(
                 database=parameters.get("database"),
@@ -127,17 +126,18 @@ def db_connect() -> PostgresqlDatabase:
                 port=parameters.get("port"),
                 autorollback=True
                 )
+            return db
         except Exception as e:
             print(f"Ошибка подключения: {e}")
             if input("Поменять настройки? [y/n]").lower() == "y":
                 parameters = setting_parameters()
-                try_connect(db, parameters)
+                return try_connect(db, parameters)
             else:
                 print("Завершение работы...")
                 exit(0)
-    try_connect(db, parameters)
+    db = try_connect(parameters)
     if db is not None:
         return db
 
 if __name__ == "__main__":
-    db = db_connect()
+    db = create_db_connect()
