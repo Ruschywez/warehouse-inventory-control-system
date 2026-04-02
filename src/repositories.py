@@ -1,4 +1,4 @@
-from entities import Goods, Remainder, Receipt, Shipment, BaseModel
+from .entities import Goods, Remainder, Receipt, Shipment, BaseModel
 from peewee import DoesNotExist
 from typing import Optional, List
 from datetime import date
@@ -12,6 +12,8 @@ class GoodsRepository:
             return self.model.get_by_id(good)
         except DoesNotExist:
             return None
+    def find_all(self) -> List[Goods]:
+        return list(self.model.select())
     def create(self, name: str, price: float) -> Goods:
         return self.model.create(name=name, price=price)
     def update(self, good: int, **kwargs) -> bool:

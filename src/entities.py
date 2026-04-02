@@ -1,6 +1,6 @@
 from peewee import AutoField, CharField, Check, DateField, DecimalField, DoesNotExist, ForeignKeyField, IntegerField, Model, Proxy, PostgresqlDatabase
 from datetime import date
-from db_connect import create_db_connect
+from .db_connect import create_db_connect
 """Файл с 4 основными сущностями.
     Сущности соответствуют 4 таблицам из БД:
 
