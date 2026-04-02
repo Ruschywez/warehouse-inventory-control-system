@@ -2,6 +2,7 @@ from .entities import Goods, Remainder, Receipt, Shipment, BaseModel
 from peewee import DoesNotExist
 from typing import Optional, List
 from datetime import date
+from decimal import Decimal
 
 
 class GoodsRepository:
@@ -14,7 +15,7 @@ class GoodsRepository:
             return None
     def find_all(self) -> List[Goods]:
         return list(self.model.select())
-    def create(self, name: str, price: float) -> Goods:
+    def create(self, name: str, price: Decimal) -> Goods:
         return self.model.create(name=name, price=price)
     def update(self, good: int, **kwargs) -> bool:
         query = self.model.update(**kwargs).where(self.model.good == good)
@@ -29,13 +30,13 @@ class GoodsRepository:
         except DoesNotExist:
             return None
     """По цене"""
-    def get_by_price(self, price: float) -> List[Goods]:
+    def get_by_price(self, price: Decimal) -> List[Goods]:
         return list(self.model.select().where(self.model.price == price))
-    def get_by_price_lower_then(self, price: float) -> List[Goods]:
+    def get_by_price_lower_then(self, price: Decimal) -> List[Goods]:
         return list(self.model.select().where(self.model.price < price))
-    def get_by_price_upper_then(self, price: float) -> List[Goods]:
+    def get_by_price_upper_then(self, price: Decimal) -> List[Goods]:
         return list(self.model.select().where(self.model.price > price))
-    def get_by_price_period(self, start: float, end: float) -> List[Goods]:
+    def get_by_price_period(self, start: Decimal, end: Decimal) -> List[Goods]:
         return list(self.model.select().where(start <= self.model.price <= end))
 class RemainderRepository:
     def __init__(self, model: Remainder):

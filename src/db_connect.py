@@ -48,15 +48,15 @@ def is_parameters_valid(parameters: dict) -> tuple[bool, str]:
     if parameters.get("database") == None or parameters.get("user") == None or parameters.get("password") == None or parameters.get("host") == None or parameters.get("port") == None:
         return (False, "Данные не должны быть пустые")
     if type(parameters["database"]) != str:
-        return (False, f"database должно быть str! Получено: {type(parameters["database"])}")
+        return (False, f"database должно быть str! Получено: {type(parameters['database'])}")
     if type(parameters["host"]) != str:
-        return (False, f"host должно быть str! Получено: {type(parameters["host"])}")
+        return (False, f"host должно быть str! Получено: {type(parameters['host'])}")
     if type(parameters["password"]) != str:
-        return (False, f"password должно быть str! Получено: {type(parameters["password"])}")
+        return (False, f"password должно быть str! Получено: {type(parameters['password'])}")
     if type(parameters["port"]) != int:
-        return (False, f"port должно быть int! Получено: {type(parameters["port"])}")
+        return (False, f"port должно быть int! Получено: {type(parameters['port'])}")
     if type(parameters["user"]) != str:
-        return (False, f"user должно быть str! Получено: {type(parameters["user"])}")
+        return (False, f"user должно быть str! Получено: {type(parameters['user'])}")
     if len(str(parameters["port"])) != 4:
         return (False, "port должен быть 4 символа в длину!")
     # если ни одной ошибки, то...
