@@ -85,7 +85,24 @@ class ReceiptRepository:
             return None
     def find_all(self) -> List[Receipt]:
         return list(self.model.select())
-    
+    def create(self, good: int | Goods, amount: int) -> Receipt:
+        if amount <= 0:
+            raise ValueError(f"amount должно быть выше нуля")
+        if isinstance(good, int):
+            good_obj = Goods.get_or_none(Goods.good == good)
+            if not good_obj:
+                raise ValueError(f"Товар с id {good} не найден")
+        else:
+            good_obj = good
+        with BaseModel.Meta.database.atomic():
+            remainder = Remainder.select().where(Remainder.good == good_obj).for_update().first()
+            receipt = Receipt.create(good=good, amount=amount, date=date.today())
+            if remainder is None:
+                remainder = Remainder.create(good=good, amount=amount)
+            else:
+                remainder.amount += amount
+                remainder.save()
+            return receipt
     """По дате"""
     def get_by_date(self, date: date) -> List[Receipt]:
         return list(self.model.select().where(self.model.date == date))
@@ -119,9 +136,9 @@ class ShipmentRepository:
             return None
     def find_all(self) -> List[Shipment]:
         return list(self.model.select())
-    def create(self, good: int | Goods, amount: int) -> Optional[Shipment]:
+    def create(self, good: int | Goods, amount: int) -> Shipment:
         if amount < 0:
-            raise ValueError(f"Количество должно быть больше нуля, а получено {amount}")
+            raise ValueError(f"amount должно быть больше нуля, а получено {amount}")
         with BaseModel.Meta.database.atomic():
             try:
                 remainder = Remainder.select().where(Remainder.good == good).for_update().get()
